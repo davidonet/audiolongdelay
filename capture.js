@@ -1,5 +1,5 @@
 var alsa = require('alsa'), mongo = require('mongoskin');
-var db = mongo.db("mongodb://localhost/dangraham", {
+var db = mongo.db("mongodb://localhost/audiobuffer", {
 	safe : false
 });
 
