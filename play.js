@@ -15,7 +15,7 @@ db.bind('audiosample');
 var playback = new alsa.Playback(device, channels, rate, format, access, latency);
 var startDate = new Date();
 startDate.setSeconds(startDate.getSeconds() - 10);
-console.log('playing from ',startDate);
+console.log('playing from ', startDate);
 var cursor = db.audiosample.find({
 	t : {
 		$gt : startDate
@@ -33,6 +33,7 @@ cursor.nextObject(function(err, doc) {
 		}
 	}
 });
+var CurDate = startDate;
 playback.on('drain', function() {
 	cursor.nextObject(function(err, doc) {
 		if (err) {
@@ -40,10 +41,18 @@ playback.on('drain', function() {
 		} else {
 			if (doc) {
 				playback.write(doc.b.buffer);
+				curDate = doc.t;
 				console.log("playing @ ", doc.t);
 			} else {
-				console.log("no data");
-
+				cursor = db.audiosample.find({
+					t : {
+						$gte : curDate
+					}
+				});
+				cursor.nextObject(function(err, doc) {
+					playback.write(doc.b.buffer);
+					console.log("buffer under run @ ", doc.t);
+				});
 			}
 		}
 	});
