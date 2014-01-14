@@ -14,7 +14,7 @@ db.bind('audiosample');
 
 var playback = new alsa.Playback(device, channels, rate, format, access, latency);
 var startDate = new Date();
-startDate.setSeconds(startDate.getSeconds() - 10);
+startDate.setHours(startDate.getHours() - 24);
 console.log('playing from ', startDate);
 var cursor = db.audiosample.find({
 	t : {
