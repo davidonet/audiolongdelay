@@ -11,7 +11,9 @@ access = alsa.ACCESS_RW_INTERLEAVED, // Access mode
 latency = 1000;
 
 db.bind('audiosample');
-
+db.audiosample.ensureIndex({
+	t : 1
+});
 var capture = new alsa.Capture(device, channels, rate, format, access, latency);
 capture.on('data', function(buffer) {
 	var aDate = new Date();
@@ -21,6 +23,7 @@ capture.on('data', function(buffer) {
 	}, function(err, data) {
 		if (err)
 			console.log(err);
+		console.log("recording @ ", aDate," ",buffer.length);
 	});
 });
 
