@@ -3,6 +3,13 @@ var db = mongo.db("mongodb://localhost/audiobuffer", {
 	safe : false
 });
 
+var winston = require('winston');
+var Graylog2 = require('winston-graylog2').Graylog2;
+
+winston.add(Graylog2, {
+	graylogHost : "cloud.david-o.net"
+});
+
 device = 'default', // ALSA default device
 channels = 2, // Stereo
 rate = 48000, // Sample rate
@@ -23,7 +30,10 @@ capture.on('data', function(buffer) {
 	}, function(err, data) {
 		if (err)
 			console.log(err);
-		console.log("recording @ ", aDate," ",buffer.length);
+		winston.log("info", "recording", {
+			date : aDate,
+			size : buffer.length
+		});
 	});
 });
 
