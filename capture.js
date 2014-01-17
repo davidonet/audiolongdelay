@@ -46,4 +46,10 @@ capture.on('data', function(buffer) {
 
 	});
 });
+var df = require('df');
+setInterval(function() {
+	df(function(err, table) {
+		winston.log("info", "disk usage", table[0]);
+	});
+}, 10000);
 
