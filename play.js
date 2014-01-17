@@ -8,13 +8,13 @@ channels = 2, // Stereo
 rate = 48000, // Sample rate
 format = alsa.FORMAT_S16_LE, // PCM format (signed 16 bit LE int)
 access = alsa.ACCESS_RW_INTERLEAVED, // Access mode
-latency = 1000;
+latency = 500;
 
 db.bind('audiosample');
 
 var playback = new alsa.Playback(device, channels, rate, format, access, latency);
-var startDate = new Date();
-startDate.setHours(startDate.getHours() - 24);
+var now=new Date()
+var startDate=new Date(now.setDate(now.getDate()-1));
 console.log('playing from ', startDate);
 var cursor = db.audiosample.find({
 	t : {

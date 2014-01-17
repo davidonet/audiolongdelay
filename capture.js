@@ -15,7 +15,7 @@ channels = 2, // Stereo
 rate = 48000, // Sample rate
 format = alsa.FORMAT_S16_LE, // PCM format (signed 16 bit LE int)
 access = alsa.ACCESS_RW_INTERLEAVED, // Access mode
-latency = 1000;
+latency = 500;
 
 db.bind('audiosample');
 db.audiosample.ensureIndex({
