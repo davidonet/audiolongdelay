@@ -15,6 +15,7 @@ winston.log("info", "purging", {
 	from : lastDate
 });
 db.bind('audiosample');
+
 db.audiosample.remove({
 	t : {
 		$lt : lastDate
@@ -25,6 +26,10 @@ db.audiosample.remove({
 		from : lastDate,
 		err : err
 	});
-	
+
+	setTimeout(function() {
+		process.exit(0);
+	}, 1000);
+
 });
 
