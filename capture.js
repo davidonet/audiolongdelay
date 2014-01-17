@@ -22,6 +22,8 @@ db.audiosample.ensureIndex({
 	t : 1
 });
 var capture = new alsa.Capture(device, channels, rate, format, access, latency);
+var sum = 0;
+var now = new Date();
 capture.on('data', function(buffer) {
 	var aDate = new Date();
 	db.audiosample.insert({
@@ -30,10 +32,18 @@ capture.on('data', function(buffer) {
 	}, function(err, data) {
 		if (err)
 			console.log(err);
-		winston.log("info", "recording", {
-			date : aDate,
-			size : buffer.length
-		});
+		sum += buffer.length;
+		var current = new Date();
+		if (5000 < (current - now)) {
+
+			winston.log("info", "recording", {
+				date : aDate,
+				size : sum
+			});
+			sum = 0;
+			now = current;
+		}
+
 	});
 });
 

@@ -12,10 +12,19 @@ latency = 500;
 
 db.bind('audiosample');
 
+var winston = require('winston');
+var Graylog2 = require('winston-graylog2').Graylog2;
+
+winston.add(Graylog2, {
+	graylogHost : "cloud.david-o.net"
+});
+
 var playback = new alsa.Playback(device, channels, rate, format, access, latency);
-var now=new Date()
-var startDate=new Date(now.setDate(now.getDate()-1));
-console.log('playing from ', startDate);
+var now = new Date()
+var startDate = new Date(now.setDate(now.getDate() - 1));
+winston.log("info", "playing from", {
+	date : startDate
+});
 var cursor = db.audiosample.find({
 	t : {
 		$gt : startDate
@@ -34,6 +43,9 @@ cursor.nextObject(function(err, doc) {
 	}
 });
 var CurDate = startDate;
+
+var now = new Date();
+
 playback.on('drain', function() {
 	cursor.nextObject(function(err, doc) {
 		if (err) {
@@ -42,7 +54,13 @@ playback.on('drain', function() {
 			if (doc) {
 				playback.write(doc.b.buffer);
 				curDate = doc.t;
-				console.log("playing @ ", doc.t);
+				var current = new Date();
+				if (5000 < (current - now)) {
+					winston.log("info", "playing", {
+						date : doc.t,
+					});
+					now = current;
+				}
 			} else {
 				cursor = db.audiosample.find({
 					t : {
@@ -51,7 +69,9 @@ playback.on('drain', function() {
 				});
 				cursor.nextObject(function(err, doc) {
 					playback.write(doc.b.buffer);
-					console.log("buffer under run @ ", doc.t);
+					winston.log("info", "buffer under run", {
+						date : doc.t,
+					});
 				});
 			}
 		}
