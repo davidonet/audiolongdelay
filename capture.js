@@ -7,7 +7,7 @@ var winston = require('winston');
 var Graylog2 = require('winston-graylog2').Graylog2;
 
 winston.add(Graylog2, {
-	graylogHost : "cloud.david-o.net"
+	graylogHost : "log.bype.org"
 });
 
 device = 'default', // ALSA default device
