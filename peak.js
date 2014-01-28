@@ -24,7 +24,7 @@ setInterval(function() {
 			var level = (l16 + r16) / 65536;
 			peak = (peak < level ? level : peak);
 		}
-		winston.log("info", "recording", {
+		winston.log("info", "peak", {
 			date : doc[0].t,
 			peak : peak
 		});
